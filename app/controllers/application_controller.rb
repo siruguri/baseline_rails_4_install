@@ -32,7 +32,8 @@ class ApplicationController < ActionController::Base
 
   def create_navbar_data
     @navbar_entries = NavbarEntry.all.map do |entry|
-      if entry.user_id == -1 || Ability.new(current_user).can?(:read, entry)
+      if entry.user_id == -1
+        # add this if you use Cancan --> || Ability.new(current_user).can?(:read, entry)
         {title: entry.title, url: entry.url }
       end
     end

@@ -1,10 +1,10 @@
 require 'test_helper'
 
 class RedirectFor404Test < Capybara::Rails::TestCase
-  # General tests for what signed in and out users
-
+  # General tests for what signed in and out users can see
   before do
-    Capybara.default_driver = :rack_test
+    # In general, if your tests use JS enabled drivers, this will unset that - so it's commented out.
+    # Capybara.default_driver = :rack_test
   end
 
   test '404 redirects to sign in page' do

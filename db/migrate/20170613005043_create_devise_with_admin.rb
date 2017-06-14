@@ -1,5 +1,5 @@
 class CreateDeviseWithAdmin < ActiveRecord::Migration[5.0]
-  def self.change
+  def change
     create_table :admins do |t|
       ## Database authenticatable
       t.string :email,              null: false, default: ""

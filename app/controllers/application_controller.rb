@@ -14,10 +14,6 @@ class ApplicationController < ActionController::Base
     error_message = I18n.t(:message_404)
     go_to_root(error_message)
   end
-  rescue_from CanCan::AccessDenied do |exception|
-    error_message = I18n.t(:access_denied_message)
-    go_to_root(error_message)
-  end
 
   private
   def set_locale
@@ -36,7 +32,8 @@ class ApplicationController < ActionController::Base
 
   def create_navbar_data
     @navbar_entries = NavbarEntry.all.map do |entry|
-      if entry.user_id == -1 || Ability.new(current_user).can?(:read, entry)
+      if entry.user_id == -1
+        # add this if you use Cancan --> || Ability.new(current_user).can?(:read, entry)
         {title: entry.title, url: entry.url }
       end
     end

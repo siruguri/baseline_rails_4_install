@@ -43,7 +43,8 @@ Before you run your app, you have to prepare the baseline code as follows:
         git rm category.rb  task*
 	cd ../../db/migrate
 	# Remove some columns that have been stuffed into the User table/model
-        git rm *age*user*
+	git rm *navbar*
+	git rm *add_admin* *add_age*
 	git rm *admin*user*
         cd ../../app/controllers
         git rm app_tasks_controller.rb app_tasks_controller.rb navbar_entries_controller.rb  homepage_controller.rb users_controller.rb
@@ -56,13 +57,20 @@ Before you run your app, you have to prepare the baseline code as follows:
 	git rm -rf gmaps
 	cd ../stylesheets
 	git rm test_models.css.scss tasks.css.scss task.css.scss
-	cd ../../../db/migrate
-	git rm *navbar*
-	git rm *add_admin* *add_age*
         cd ../../test/
 	git rm integrations/*
 	git rm models/task*
 	git rm fixtures/navbar_entries.yml
+	cd ../app/jobs
+	git rm cron_job.rb
+
+* Some files support additional sample functionality - but you might not find them useful in your app
+
+        # cancan
+	cd app/models
+	git rm ability.rb
+	# The navbar
+	git rm navbar_entry.rb
 
 * You might also want to delete some of the steps in the `seeds.rb` file - otherwise if you ran a `db:reset` task, those methods will be executed and generate error messages if you don't have the corresponding models.
 * The app's asset pipeline does not load any new JS or CSS files by default via `require_tree`: if you add new asset files, make sure you have included them in the pipeline by adding them to `application.css` or `application.js`, as appropriate.

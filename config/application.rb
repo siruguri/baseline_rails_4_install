@@ -1,5 +1,5 @@
 require 'dotenv'
-Dotenv.load
+Dotenv.load unless Rails.env.production?
 
 require File.expand_path('../boot', __FILE__)
 require 'rails/all'

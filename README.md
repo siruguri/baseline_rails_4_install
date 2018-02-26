@@ -2,23 +2,23 @@
 
 ## Introduction
 
-This Rails 5.0.0.1 app sets up the basic code for a skeleton app:
+This Rails 5.1.4 app sets up the basic code for a skeleton app, that can run with Ruby 2.5:
 
 * The app uses the Thin application server, instead of the Webrick default.
 * There some basic models, each meant to do something interesting:
   * Task: It borrows code from a standard scaffold structure. It showcases a simple association - belongs_to :owner, class_name: "User"
   * Location: It showcases geocoding.
-* Devise and Cancan are set up:
+* Devise is set up:
   * Devise uses User as the model for authentication; no other config changes are made for Devise other than those in the default gem. Devise views are installed.
-  * CanCan uses a simple authentication using the Task => User association
 * The production environment uses a Postgres adapter - development uses SQLite3.
 * Views (for Task) use HAML
 * Controllers use strong parameters
 * Assets
-  * Stylesheets use SASS, rather than LESS. The `application.css.scss` file explicitly includes what it needs, which in the beiginning is simply Bootstrap and a reset file that performs [basic browser resets](http://meyerweb.com/eric/tools/css/reset/)
-* The layout puts notice and alert at the top of the page, and a float:right element to accommodate the user session (logged-in/out) state.
+  * Stylesheets use SASS. The `application.css.scss` file includes Bootstrap 4.
+* The layout puts notice and alert at the top of the page, and a `float:right` element to accommodate the user session (logged-in/out) state.
 * The app has Capistrano v3 installed with some basic defaults that assist in making deployments to a remote folder via SSH, like sym-linking to an existing database, to the database config file so that credentials are not stored in the SCS, etc.
-* Rails Admin: The app now has Rails Admin installed. Note that installation was done by following [the basic steps](https://github.com/sferik/rails_admin#installation), and that the Devise lines in `config/initializers/rails_admin.rb` are uncommented. 
+* Rails Admin: The app now has Rails Admin installed. Note that installation was done by following [the basic steps](https://github.com/sferik/rails_admin#installation), and that the Devise lines in `config/initializers/rails_admin.rb` are uncommented.
+
 ## Usage
 
 Before you run your app, you have to prepare the baseline code as follows:
@@ -39,38 +39,8 @@ Before you run your app, you have to prepare the baseline code as follows:
 * The locale file has the site's title, and the phrase that's in the Bootstrap navbar - you might want to change it.
 * You might want to delete some models (`Task`, `Location`, etc.), their corresponding tests and migrations, and the corresponding routes. Also, you might want to get rid of the Google Maps API assets in `app\assets\javascripts\gmaps`. Remember to remove them from your repository, not just the filesystem. Here's a helpful list of `git rm` commands you might want to consider running:
 
-        cd app/models/
-        git rm category.rb  task*
-	cd ../../db/migrate
-	# Remove some columns that have been stuffed into the User table/model
-	git rm *navbar*
-	git rm *add_admin* *add_age*
-	git rm *admin*user*
-        cd ../../app/controllers
-        git rm app_tasks_controller.rb app_tasks_controller.rb navbar_entries_controller.rb  homepage_controller.rb users_controller.rb
-	cd ../../app/helpers
-	git rm task* expired* test*
-        cd ../../app/views/
-        git rm -r navbar_entries/ users/
-	cd ../../app/assets/javascripts
-	git rm tasks.js.coffee test_models.js.coffee
-	git rm -rf gmaps
-	cd ../stylesheets
-	git rm test_models.css.scss tasks.css.scss task.css.scss
-        cd ../../test/
-	git rm integrations/*
-	git rm models/task*
-	git rm fixtures/navbar_entries.yml
-	cd ../app/jobs
-	git rm cron_job.rb
-
-* Some files support additional sample functionality - but you might not find them useful in your app
-
-        # cancan
-	cd app/models
-	git rm ability.rb
-	# The navbar
-	git rm navbar_entry.rb
+        cd app/controllers
+        git rm navbar_entries_controller.rb homepage_controller.rb users_controller.rb
 
 * You might also want to delete some of the steps in the `seeds.rb` file - otherwise if you ran a `db:reset` task, those methods will be executed and generate error messages if you don't have the corresponding models.
 * The app's asset pipeline does not load any new JS or CSS files by default via `require_tree`: if you add new asset files, make sure you have included them in the pipeline by adding them to `application.css` or `application.js`, as appropriate.
@@ -87,7 +57,7 @@ The code attempts to be secure - it passes all Brakeman tests, as of Apr 2014. P
 	
   * In development, the secret token is enabled in `config/initializers/secret_token.rb`. The app also uses the `dotenv` gem to utilize a .env file in the app root as an alternate method if you don't even want to share your development secret token in your repo. You have to create the `.env` file and add the `RAILS_SECRET_TOKEN` variable to it, if you are using this method.
 * **However**, the app does **NOT** use the database as the session store. This is the recommended thing to do, but has some performance implications, so [look into implementing it yourself](https://github.com/rails/activerecord-session_store).
-* Also, note that while there's a helpful hint in the `routes.rb` file that the Rails Admin and Sidekiq monitor interfaces should be protected by a routing constraint that checks that a logged-in admin session token is available, the default code does not enforce this.
+* Also, note that in `routes.rb`, the Rails Admin and Sidekiq monitor interfaces are protected by a routing constraint that checks that a logged-in admin session token is available.
 
 ## Views
 
@@ -99,13 +69,13 @@ You might want to note the classes in `assets/stylesheets/custom.scss` and that 
 
 ## Testing
 
-The app also has some basic tests, and coverage is well below a reasonable level (set to 95% in the `.simplecov` configuration file.) After all, real developers don't test their code; they just have an unbounded, and completely unfounded, faith in their infallibility. Right? Ok, no, j/k. Test your code, people.
+The app also has some basic tests, and coverage is well below a reasonable level (set to 95% in the `.simplecov` configuration file.)
 
 * It uses Minitest.
 * It uses Capybara.
-* CI: None so far. This codebase has evolved very slowly from Ruby MRI 2.0 to 2.3.0, and from Rails 4.0 to 4.2. So possibly all combinations of those two version histories will work but YMMV.
+* CI: None.
 * Unit tests for users and tasks - check that users can be created, and that tasks cannot be created when a user is not logged in.
-* Integration tests: None so far
+* Integration tests: None.
 
 ## Sidekiq
 
@@ -127,36 +97,9 @@ Don't forget to run `rake db:migrate` in Heroku, of course :)
 
 I am not sure I'll add these gems - their configuration changes a lot, imo, and these are not necessarily "commonly" used. But you might hold your breath a bit...
 
-* Paperclip with S3: This can get complicated - first you should have a model for files that `belongs_to Imageable`, and build the appropriate polymorphic migration for the files model; then you configure S3 with credentials in your appropriate config file (bucket, S3 keys); then you configure your path, and add a `paperclip.rb` initializer optionally that adds an `interpolates` method to customize your URL.
+* Paperclip with S3
+* Vue
 * Elastic Search
-
-## How Did The App Get Here?
-
-If you are trying to do this from scratch, note that the following `rails` and `rake` commands are essential to getting the app to its current state, after your bundle is installed (though you also have to change the code obviously).
-
-This list is unfortunately *not* complete - it's pretty hard to keep the list of migrations up-to-date. :(
-
-    rails new baseline_rails_install
-    rails generate model User admin:boolean age:integer
-    rails generate model Task title:string owner_id:integer
-    rails generate scaffold Location lat:float long:float name:string address:string	
-
-These generate files, so you don't have to re-run them, but they are here for the sake of the record. This list too is probably incomplete:
-
-    # Devise
-    rails generate devise User
-    rails generate devise:views
-
-    # CanCan
-    rails g cancan:ability
-
-    # For Bootstrap Rails
-    rails generate bootstrap:install less
-
-    # For Rails Admin
-    rails g rails_admin:install
-
-    # There's probably stuff for geocoding, gmaps4rails, and doorkeeper ... not sure if that's the case.
 
 ## Contribute and Use
 

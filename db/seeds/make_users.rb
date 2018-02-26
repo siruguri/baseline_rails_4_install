@@ -1,12 +1,19 @@
-admin_u = User.find_or_create_by(email: 'admin@me.com')
-admin_u.password='admin123'
-admin_u.admin=true
-admin_u.confirmed_at = Time.now.utc
-admin_u.save
+if Rails.env.development?
+  password = 'adminpassword'
+else
+  if ENV['ADMIN_PASSWORD'].nil?
+    $stderr.puts 'Define password in environment.'
+    exit -1
+  else
+    password =  ENV['ADMIN_PASSWORD']
+  end
+end
 
-u = User.find_or_create_by(email: 'just_u@me.com')
-u.password='userme123'
-u.confirmed_at = Time.now.utc
-u.admin=false
+admin = Admin.find_or_initialize_by email: 'admin@mobiuscapitalmanagement.com'
+admin.password = password
+admin.save
+
+u = User.find_or_create_by(email: 'analyst@fund.com')
+u.password = 'userme123'
 u.save
 

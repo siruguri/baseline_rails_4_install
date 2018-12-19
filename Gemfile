@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 source 'https://rubygems.org'
-ruby '2.5.0'
+ruby '2.5.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '>=5.1'
@@ -69,8 +69,9 @@ group :test do
   gem 'simplecov'
   gem 'webmock'
   gem 'minitest-spec-rails'
-  gem 'minitest-rails-capybara'
+  gem 'minitest-rails-capybara', '~> 3.0'
   gem 'capybara'
+  gem 'capybara-webkit'
   gem 'selenium-webdriver'
   gem 'chromedriver-helper'
 end

@@ -1,8 +1,8 @@
 require 'dotenv'
+require 'rails/all'
 Dotenv.load unless Rails.env.production?
 
 require File.expand_path('../boot', __FILE__)
-require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -22,6 +22,7 @@ module TodoList
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
     # config.time_zone = 'Central Time (US & Canada)'
 
+    config.active_record.sqlite3.represent_boolean_as_integer = true
     config.assets.quiet = true
     config.active_job.queue_adapter = :sidekiq
     config.middleware.insert(0, Rack::Deflater)

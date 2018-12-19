@@ -20,7 +20,7 @@ gem 'coffee-rails'
 
 # Everybody gotta have some jQuery and Bootstrap!
 gem 'jquery-rails'
-gem 'bootstrap', '~> 4.0.0'
+gem 'bootstrap', '~> 4.1'
 
 # Both needed for default layouts and Turbolinks
 gem 'turbolinks'
